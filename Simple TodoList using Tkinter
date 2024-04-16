@@ -1,0 +1,56 @@
+import tkinter as tk
+
+tasks = []
+
+def add_task():
+    task = task_entry.get()
+    tasks.append(task)
+    task_list.insert(tk.END, task)
+    task_entry.delete(0, tk.END)
+    print(f"Your task '{task}' has been added to the list")
+
+def delete_task():
+    selection = task_list.curselection()
+    if selection:
+        index = selection[0]
+        task_list.delete(index)
+        del tasks[index]
+        print("The item has been removed and here is the updated list ")
+        print(tasks)
+
+def list_tasks():
+    print("Below is the list of all your tasks you need to do:")
+    print(tasks)
+
+def quit_task():
+    quit()
+
+# Create main window
+root = tk.Tk()
+root.title("To-Do List")
+
+# Create task entry field
+task_entry = tk.Entry(root)
+task_entry.pack(pady=5)
+
+# Create add task button
+add_button = tk.Button(root, text="Add Task", command=add_task)
+add_button.pack()
+
+# Create task list
+task_list = tk.Listbox(root)
+task_list.pack(pady=5)
+
+# Create delete task button
+delete_button = tk.Button(root, text="Delete Task", command=delete_task)
+delete_button.pack()
+
+# Create list task button
+list_button = tk.Button(root, text="List Tasks", command=list_tasks)
+list_button.pack()
+
+# Create quit button
+quit_button = tk.Button(root, text="Quit", command=quit_task)
+quit_button.pack()
+
+root.mainloop()
