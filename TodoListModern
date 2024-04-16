@@ -1,0 +1,73 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLineEdit, QVBoxLayout, QWidget, QListWidget
+
+tasks = []
+
+class ToDoListApp(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("To-Do List")
+        self.setGeometry(200, 200, 400, 300)
+
+        layout = QVBoxLayout()
+
+        self.task_entry = QLineEdit()
+        layout.addWidget(self.task_entry)
+
+        self.add_button = QPushButton("Add Task")
+        self.add_button.clicked.connect(self.add_task)
+        layout.addWidget(self.add_button)
+
+        self.task_list = QListWidget()
+        layout.addWidget(self.task_list)
+
+        self.delete_button = QPushButton("Delete Task")
+        self.delete_button.clicked.connect(self.delete_task)
+        layout.addWidget(self.delete_button)
+
+        central_widget = QWidget()
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
+
+        self.load_tasks()
+
+    def add_task(self):
+        task = self.task_entry.text()
+        if task:
+            tasks.append(task)
+            self.task_list.addItem(task)
+            self.task_entry.clear()
+            self.save_tasks()
+            print(f"Your task '{task}' has been added to the list")
+
+    def delete_task(self):
+        selected_item = self.task_list.currentItem()
+        if selected_item:
+            index = self.task_list.row(selected_item)
+            del tasks[index]
+            self.task_list.takeItem(index)
+            self.save_tasks()
+            print("The item has been removed and here is the updated list ")
+            print(tasks)
+
+    def load_tasks(self):
+        try:
+            with open("tasks.txt", "r") as file:
+                for task in file:
+                    task = task.strip()
+                    tasks.append(task)
+                    self.task_list.addItem(task)
+        except FileNotFoundError:
+            pass
+
+    def save_tasks(self):
+        with open("tasks.txt", "w") as file:
+            for task in tasks:
+                file.write(task + "\n")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = ToDoListApp()
+    window.show()
+    sys.exit(app.exec_())
